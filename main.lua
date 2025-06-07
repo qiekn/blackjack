@@ -64,10 +64,18 @@ function love.draw()
   -- Draw the winner
   if roundOver then
     table.insert(output, "")
-    local a, b = getTotal(playerHand), getTotal(dealerHand)
-    if a <= 21 and (b > 21 or b < a) then
+
+    local function hasHandWon(thisHand, otherHand)
+      return getTotal(thisHand) <= 21
+        and (
+          getTotal(otherHand) > 21
+          or getTotal(thisHand) > getTotal(otherHand)
+        )
+    end
+
+    if hasHandWon(playerHand, dealerHand) then
       table.insert(output, "Player wins")
-    elseif b <= 21 and (a > 21 or b > a) then
+    elseif hasHandWon(dealerHand, playerHand) then
       table.insert(output, "Dealer wins")
     else
       table.insert(output, "Draw")
