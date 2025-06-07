@@ -16,15 +16,6 @@ function love.load()
     images[name] = love.graphics.newImage("images/" .. name .. ".png")
   end
 
-  -- Deck
-  deck = {}
-  for suitIndex, suit in ipairs({ "club", "diamond", "heart", "spade" }) do
-    for rank = 1, 13 do
-      table.insert(deck, { suit = suit, rank = rank })
-      print("suit: " .. suit .. ", rank: " .. rank)
-    end
-  end
-
   -- Buttons
   local buttonY = 230
   local buttonHeight = 25
@@ -96,15 +87,28 @@ function love.load()
       and love.mouse.getY() < button.y + button.height
   end
 
-  playerHand = {}
-  takeCard(playerHand)
-  takeCard(playerHand)
+  function reset()
+    -- Deck
+    deck = {}
+    for suitIndex, suit in ipairs({ "club", "diamond", "heart", "spade" }) do
+      for rank = 1, 13 do
+        table.insert(deck, { suit = suit, rank = rank })
+        print("suit: " .. suit .. ", rank: " .. rank)
+      end
+    end
 
-  dealerHand = {}
-  takeCard(dealerHand)
-  takeCard(dealerHand)
+    playerHand = {}
+    takeCard(playerHand)
+    takeCard(playerHand)
 
-  print("total number of cards in deck: " .. #deck)
+    dealerHand = {}
+    takeCard(dealerHand)
+    takeCard(dealerHand)
+
+    roundOver = false
+  end
+
+  reset()
 end
 
 function love.draw()
@@ -282,6 +286,6 @@ function love.mousereleased()
       end
     end
   elseif isMouseInButton(buttonPlayAgain) then
-    love.load()
+    reset()
   end
 end
