@@ -81,12 +81,6 @@ function love.draw()
     end
   end
 
-  if roundOver then
-    table.insert(output, "Total: " .. getTotal(dealerHand))
-  else
-    table.insert(output, "Total: ?")
-  end
-
   -- Draw the winner
   if roundOver then
     table.insert(output, "")
@@ -212,6 +206,15 @@ function love.draw()
   for cardIndex, card in ipairs(playerHand) do
     drawCard(card, ((cardIndex - 1) * cardSpacing) + marginX, 140)
   end
+
+  -- Draw Total
+  love.graphics.setColor(0, 0, 0)
+  if roundOver then
+    love.graphics.print("Total: " .. getTotal(dealerHand), marginX, 10)
+  else
+    love.graphics.print("Total: ?", marginX, 10)
+  end
+  love.graphics.print("Total: " .. getTotal(playerHand), marginX, 120)
 end
 
 function love.keypressed(key)
