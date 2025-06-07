@@ -2,7 +2,16 @@
 
 This project is an exercise for this tutorial [Blackjack A tutorial for Lua and LÖVE 11](https://berbasoft.com/simplegametutorials/love/blackjack/)
 
-![image](https://github.com/user-attachments/assets/2004d147-bb63-4e81-ae7f-44a257a855a2)
+
+
+- v1.1.0
+<img width="456" alt="v1.1.0" src="https://github.com/user-attachments/assets/895c970e-bdea-44d2-b8d3-ae750c49deef" />
+
+
+<details>
+  <summary>v1.0.0</summary>
+  <img alt="v1.0.0" src="https://github.com/user-attachments/assets/2004d147-bb63-4e81-ae7f-44a257a855a2" />
+</details>
 
 ## Rules
 
