@@ -1,4 +1,5 @@
 function love.load()
+  roundOver = false
   deck = {}
   for suitIndex, suit in ipairs({ "club", "diamond", "heart", "spade" }) do
     for rank = 1, 13 do
@@ -64,7 +65,9 @@ function love.draw()
 end
 
 function love.keypressed(key)
-  if key == "h" then
+  if key == "h" and not roundOver then
     takeCard(playerHand)
+  elseif key == "s" then
+    roundOver = true
   end
 end
