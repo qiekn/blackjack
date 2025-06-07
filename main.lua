@@ -65,7 +65,12 @@ function love.draw()
       table.insert(output, "suit: " .. card.suit .. ", rank: " .. card.rank)
     end
   end
-  table.insert(output, "Total: " .. getTotal(dealerHand))
+
+  if roundOver then
+    table.insert(output, "Total: " .. getTotal(dealerHand))
+  else
+    table.insert(output, "Total: ?")
+  end
 
   -- Draw the winner
   if roundOver then
