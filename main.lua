@@ -8,4 +8,15 @@ function love.load()
   end
 
   print("total number of cards in deck: " .. #deck)
+
+  playerHand = {}
+  table.insert(playerHand, table.remove(deck, love.math.random(#deck)))
+  table.insert(playerHand, table.remove(deck, love.math.random(#deck)))
+
+  print("Player Hand")
+  for cardIndex, card in ipairs(playerHand) do
+    print("suit: " .. card.suit .. ", rank: " .. card.rank)
+  end
+
+  print("total number of cards in deck: " .. #deck)
 end
