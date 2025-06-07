@@ -120,6 +120,7 @@ function love.draw()
     else
       love.graphics.setColor(0.2, 0.2, 0.2)
     end
+
     -- stylua: ignore
     local function drawCorner(image, offsetX, offsetY)
       love.graphics.draw(image, x + offsetX, y + offsetY)
@@ -127,6 +128,20 @@ function love.draw()
     end
     drawCorner(images[card.rank], 3, 4) -- Draw card rank
     drawCorner(images["mini_" .. card.suit], 3, 14) -- Draw card suit
+
+    -- Draw face card
+    if card.rank > 10 then
+      local faceImage
+      if card.rank == 11 then
+        faceImage = images.face_jack
+      elseif card.rank == 12 then
+        faceImage = images.face_queen
+      elseif card.rank == 13 then
+        faceImage = images.face_king
+      end
+      love.graphics.setColor(1, 1, 1)
+      love.graphics.draw(faceImage, x + 12, y + 11)
+    end
   end
 
   -- Test start
