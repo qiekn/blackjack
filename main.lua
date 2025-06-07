@@ -23,12 +23,21 @@ function love.load()
 end
 
 function love.draw()
+  local function getTotal(hand)
+    local total = 0
+    for cardIndex, card in ipairs(hand) do
+      total = total + card.rank
+    end
+    return total
+  end
+
   local output = {}
 
   table.insert(output, "Player hand:")
   for cardIndex, card in ipairs(playerHand) do
     table.insert(output, "suit: " .. card.suit .. ", rank: " .. card.rank)
   end
+  table.insert(output, "Total: " .. getTotal(playerHand))
 
   table.insert(output, "")
 
@@ -36,6 +45,7 @@ function love.draw()
   for cardIndex, card in ipairs(dealerHand) do
     table.insert(output, "suit: " .. card.suit .. ", rank: " .. card.rank)
   end
+  table.insert(output, "Total: " .. getTotal(dealerHand))
 
   love.graphics.print(table.concat(output, "\n"), 15, 15)
 end
