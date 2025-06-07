@@ -112,10 +112,14 @@ function love.draw()
   local function drawCard(card, x, y)
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(images.card, x, y)
-    love.graphics.setColor(0, 0, 0)
 
     local cardWidth = 53
     local cardHeight = 73
+    if card.suit == "heart" or card.suit == "diamond" then
+      love.graphics.setColor(0.89, 0.06, 0.39)
+    else
+      love.graphics.setColor(0.2, 0.2, 0.2)
+    end
     -- stylua: ignore
     local function drawCorner(image, offsetX, offsetY)
       love.graphics.draw(image, x + offsetX, y + offsetY)
