@@ -3,21 +3,57 @@ function love.load()
 
   love.graphics.setBackgroundColor(1, 1, 1)
 
-  -- Resources
-  images = {}
-  -- stylua: ignore
-  for nameIndex, name in ipairs({
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-    "pip_heart", "pip_diamond", "pip_club", "pip_spade",
-    "mini_heart", "mini_diamond", "mini_club", "mini_spade",
-    "card", "card_face_down",
-    "face_jack", "face_queen", "face_king",
-  }) do
-    images[name] = love.graphics.newImage("images/" .. name .. ".png")
+  -- HiDPI detection and setup
+  local dpiScale = love.window.getDPIScale()
+  local useHiDPI = dpiScale > 1
+  local spritePath = useHiDPI and "images/2x/" or "images/1x/"
+  local spriteScale = useHiDPI and 0.5 or 1
+
+  debugPath = spritePath
+
+  -- Load spritesheet
+  spst_decks = love.graphics.newImage(spritePath .. "deck_opt.png")
+  spst_enhancers = love.graphics.newImage(spritePath .. "enhancers.png")
+
+  -- Card dimensions in spritesheet (assuming standard layout)
+  local cardWidth = 71
+  local cardHeight = 95
+  local sheetCols = 13 -- 13 ranks (2-10, J, Q, K, A)
+  local sheetRows = 4 -- 4 suits
+
+  -- Store dimensions for drawing
+  CARD_WIDTH = cardWidth * dpiScale
+  CARD_HEIGHT = cardHeight * dpiScale
+  DPI_SCALE = dpiScale
+  SPRITE_SCALE = spriteScale
+
+  -- Create quads for each card
+  cardQuads = {}
+  local suits = { "hearts", "clubs", "diamonds", "spades" }
+  for suitIndex = 1, sheetRows do
+    local suit = suits[suitIndex]
+    cardQuads[suit] = {}
+    for rank = 1, sheetCols do
+      local x = (rank - 1) * CARD_WIDTH
+      local y = (suitIndex - 1) * CARD_HEIGHT
+      cardQuads[suit][rank % 13 + 1] = love.graphics.newQuad(
+        x,
+        y,
+        CARD_WIDTH,
+        CARD_HEIGHT,
+        spst_decks:getDimensions()
+      )
+    end
   end
 
+  -- Card back quad
+  -- stylua: ignore start
+  cardBackQuad = love.graphics.newQuad(0, 0, CARD_WIDTH, CARD_HEIGHT, spst_enhancers:getDimensions())
+  cardPlainQuad = love.graphics.newQuad(1 * CARD_WIDTH, 0, CARD_WIDTH, CARD_HEIGHT, spst_enhancers:getDimensions())
+  -- stylua: ignore end
+
   -- Buttons
-  local buttonY = 230
+  local buttonY = 280
   local buttonHeight = 25
   local textOffsetY = 6
 
@@ -90,9 +126,12 @@ function love.load()
   function reset()
     -- Deck
     deck = {}
-    for suitIndex, suit in ipairs({ "club", "diamond", "heart", "spade" }) do
+    for suitIndex, suit in ipairs({ "clubs", "diamonds", "hearts", "spades" }) do
       for rank = 1, 13 do
-        table.insert(deck, { suit = suit, rank = rank })
+        table.insert(
+          deck,
+          { suit = suit, rank = rank, quad = cardQuads[suit][rank] }
+        )
       end
     end
 
@@ -111,96 +150,17 @@ function love.load()
 end
 
 function love.draw()
+  -- stylua: ignore start
   -- Draw cards method
   local function drawCard(card, x, y)
     love.graphics.setColor(1, 1, 1)
-    love.graphics.draw(images.card, x, y)
-
-    local cardWidth = 53
-    local cardHeight = 73
-    if card.suit == "heart" or card.suit == "diamond" then
-      love.graphics.setColor(0.89, 0.06, 0.39)
-    else
-      love.graphics.setColor(0.2, 0.2, 0.2)
-    end
-
-    -- stylua: ignore
-    local function drawCorner(image, offsetX, offsetY)
-      love.graphics.draw(image, x + offsetX, y + offsetY)
-      love.graphics.draw( image, x + cardWidth - offsetX, y + cardHeight - offsetY, 0, -1)
-    end
-    drawCorner(images[card.rank], 3, 4) -- Draw card rank
-    drawCorner(images["mini_" .. card.suit], 3, 14) -- Draw card suit
-
-    -- Draw face card
-    -- stylua: ignore
-    if card.rank > 10 then
-      local faceImage
-      if card.rank == 11 then
-        faceImage = images.face_jack
-      elseif card.rank == 12 then
-        faceImage = images.face_queen
-      elseif card.rank == 13 then
-        faceImage = images.face_king
-      end
-      love.graphics.setColor(1, 1, 1)
-      love.graphics.draw(faceImage, x + 12, y + 11)
-    else
-      local function drawPip(offsetX, offsetY, mirrorX, mirrorY)
-        local pipImage = images["pip_" .. card.suit]
-        local pipWidth = 11
-        love.graphics.draw(pipImage, x + offsetX, y + offsetY)
-        if mirrorX then
-          love.graphics.draw(pipImage, x + cardWidth - offsetX - pipWidth, y + offsetY)
-        end
-        if mirrorY then
-          love.graphics.draw(pipImage, x + offsetX + pipWidth, y + cardHeight - offsetY, 0, -1)
-        end
-        if mirrorX and mirrorY then
-          love.graphics.draw(pipImage, x + cardWidth - offsetX , y + cardHeight - offsetY, 0, -1)
-        end
-      end
-
-      local xLeft = 11
-      local xMid = 21
-      local yTop = 7
-      local yThird = 19
-      local yQtr = 23
-      local yMid = 31
-      if card.rank == 1 then
-        drawPip(xMid, yMid)
-      elseif card.rank == 2 then
-        drawPip(xMid, yTop, false, true)
-      elseif card.rank == 3 then
-        drawPip(xMid, yTop, false, true)
-        drawPip(xMid, yMid)
-      elseif card.rank == 5 then
-        drawPip(xLeft, yTop, true, true)
-        drawPip(xMid, yMid)
-      elseif card.rank == 6 then
-        drawPip(xLeft, yTop, true, true)
-        drawPip(xLeft, yMid, true)
-      elseif card.rank == 7 then
-        drawPip(xLeft, yTop, true, true)
-        drawPip(xLeft, yMid, true)
-        drawPip(xMid, yThird)
-      elseif card.rank == 8 then
-        drawPip(xLeft, yTop, true, true)
-        drawPip(xLeft, yMid, true)
-        drawPip(xMid, yThird, false, true)
-      elseif card.rank == 9 then
-        drawPip(xLeft, yTop, true, true)
-        drawPip(xLeft, yQtr, true, true)
-        drawPip(xMid, yMid)
-      elseif card.rank == 10 then
-        drawPip(xLeft, yTop, true, true)
-        drawPip(xLeft, yQtr, true, true)
-        drawPip(xMid, 16, false, true)
-      end
-    end
+    love.graphics.draw(spst_enhancers, cardPlainQuad, x, y, 0, SPRITE_SCALE, SPRITE_SCALE)
+    love.graphics.draw(spst_decks, card.quad, x, y, 0, SPRITE_SCALE, SPRITE_SCALE)
   end
-
-  -- stylua: ignore
+  local function drawCardBack(x, y)
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.draw(spst_enhancers, cardBackQuad, x, y, 0, SPRITE_SCALE, SPRITE_SCALE)
+  end
   -- Draw Hit and Stand Buttons
   local function drawButton(button)
     if isMouseInButton(button) then love.graphics.setColor(1, 0.8, 0.3)
@@ -209,6 +169,7 @@ function love.draw()
     love.graphics.setColor(1, 1, 1)
     love.graphics.print( button.text, button.x + button.textOffsetX, button.y + button.textOffsetY)
   end
+  -- stylua: ignore end
 
   if not roundOver then
     drawButton(buttonHit)
@@ -218,29 +179,56 @@ function love.draw()
   end
 
   -- Draw Hands
-  local cardSpacing = 60
+  local cardSpacing = CARD_WIDTH * SPRITE_SCALE + 10
   local marginX = 10
+  -- Draw dealer hand
   for cardIndex, card in ipairs(dealerHand) do
     local dealerMarginY = 30
     if not roundOver and cardIndex == 1 then
-      love.graphics.setColor(1, 1, 1)
-      love.graphics.draw(images.card_face_down, marginX, dealerMarginY)
+      drawCardBack(marginX + (cardIndex - 1) * cardSpacing, dealerMarginY)
     else
-      drawCard(card, ((cardIndex - 1) * cardSpacing) + marginX, dealerMarginY)
+      drawCard(card, marginX + (cardIndex - 1) * cardSpacing, dealerMarginY)
     end
   end
+  -- Draw player hand
   for cardIndex, card in ipairs(playerHand) do
-    drawCard(card, ((cardIndex - 1) * cardSpacing) + marginX, 140)
+    if card.quad == nil then
+      print("draw player card: " .. card.rank .. " of " .. card.suit)
+    end
+    drawCard(card, ((cardIndex - 1) * cardSpacing) + marginX, 160)
   end
 
   -- Draw total score and winner
   love.graphics.setColor(0, 0, 0)
   if roundOver then
-    love.graphics.print("Total: " .. getTotal(dealerHand), marginX, 10)
+    love.graphics.print("Dealer Total: " .. getTotal(dealerHand), marginX, 10)
+
+    -- Determine winner
+    local playerTotal = getTotal(playerHand)
+    local dealerTotal = getTotal(dealerHand)
+    local winner = ""
+
+    if playerTotal > 21 then
+      winner = "Dealer Wins! (Player Bust)"
+    elseif dealerTotal > 21 then
+      winner = "Player Wins! (Dealer Bust)"
+    elseif playerTotal > dealerTotal then
+      winner = "Player Wins!"
+    elseif dealerTotal > playerTotal then
+      winner = "Dealer Wins!"
+    else
+      winner = "Push! (Tie)"
+    end
+
+    love.graphics.print(winner, marginX, 260)
   else
-    love.graphics.print("Total: ?", marginX, 10)
+    love.graphics.print("Dealer Total: ?", marginX, 10)
   end
-  love.graphics.print("Total: " .. getTotal(playerHand), marginX, 120)
+  love.graphics.print("Player Total: " .. getTotal(playerHand), marginX, 140)
+
+  -- stylua: ignore
+  love.graphics.print( "HiDPI Sacle: " .. love.window.getDPIScale(), marginX, 320)
+  love.graphics.print("Sprite Path: " .. debugPath, marginX, 340)
 end
 
 function love.keypressed(key)
