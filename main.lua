@@ -3,6 +3,7 @@ function love.load()
 
   love.graphics.setBackgroundColor(1, 1, 1)
 
+  -- Resources
   images = {}
   -- stylua: ignore
   for nameIndex, name in ipairs({
@@ -15,6 +16,7 @@ function love.load()
     images[name] = love.graphics.newImage("images/" .. name .. ".png")
   end
 
+  -- Deck
   deck = {}
   for suitIndex, suit in ipairs({ "club", "diamond", "heart", "spade" }) do
     for rank = 1, 13 do
@@ -22,6 +24,45 @@ function love.load()
       print("suit: " .. suit .. ", rank: " .. rank)
     end
   end
+
+  -- Buttons
+  local buttonY = 230
+  local buttonHeight = 25
+  local textOffsetY = 6
+
+  buttonHit = {
+    x = 10,
+    y = buttonY,
+    width = 53,
+    height = buttonHeight,
+    text = "Hit!",
+    textOffsetX = 16,
+    textOffsetY = textOffsetY,
+  }
+
+  buttonStand = {
+    x = 70,
+    y = buttonY,
+    width = 53,
+    height = buttonHeight,
+    text = "Stand",
+    textOffsetX = 8,
+    textOffsetY = textOffsetY,
+  }
+
+  buttonPlayAgain = {
+    x = 10,
+    y = buttonY,
+    width = 113,
+    height = buttonHeight,
+    text = "Play again",
+    textOffsetX = 24,
+    textOffsetY = textOffsetY,
+  }
+
+  ------------------------
+  --  Global Functions  --
+  ------------------------
 
   function takeCard(hand)
     table.insert(hand, table.remove(deck, love.math.random(#deck)))
@@ -46,6 +87,13 @@ function love.load()
       total = total + 10
     end
     return total
+  end
+
+  function isMouseInButton(button)
+    return love.mouse.getX() >= button.x
+      and love.mouse.getX() < button.x + button.width
+      and love.mouse.getY() >= button.y
+      and love.mouse.getY() < button.y + button.height
   end
 
   playerHand = {}
@@ -149,17 +197,18 @@ function love.draw()
     end
   end
 
+  -- stylua: ignore
   -- Draw Hit and Stand Buttons
-  local function drawButton(text, buttonX, buttonWidth, textOffsetX)
-    local buttonY = 230
-    love.graphics.setColor(1, 0.5, 0.2)
-    love.graphics.rectangle("fill", buttonX, buttonY, buttonWidth, 25)
+  local function drawButton(button)
+    if isMouseInButton(button) then love.graphics.setColor(1, 0.8, 0.3)
+    else love.graphics.setColor(1, 0.5, 0.2) end
+    love.graphics.rectangle( "fill", button.x, button.y, button.width, button.height)
     love.graphics.setColor(1, 1, 1)
-    love.graphics.print(text, buttonX + textOffsetX, buttonY + 6)
+    love.graphics.print( button.text, button.x + button.textOffsetX, button.y + button.textOffsetY)
   end
 
-  drawButton("Hit!", 10, 53, 16)
-  drawButton("Stand", 70, 53, 8)
+  drawButton(buttonHit)
+  drawButton(buttonStand)
   -- drawButton('Play again', 10, 113, 24)
 
   -- Draw Hands
@@ -209,5 +258,15 @@ function love.keypressed(key)
     end
   else
     love.load() -- Play again
+  end
+end
+
+function love.mousereleased()
+  if isMouseInButton(buttonHit) then
+    print("Hit!")
+  elseif isMouseInButton(buttonStand) then
+    print("Stand")
+  elseif isMouseInButton(buttonPlayAgain) then
+    print("Play again")
   end
 end
