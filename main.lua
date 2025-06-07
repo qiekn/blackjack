@@ -93,7 +93,6 @@ function love.load()
     for suitIndex, suit in ipairs({ "club", "diamond", "heart", "spade" }) do
       for rank = 1, 13 do
         table.insert(deck, { suit = suit, rank = rank })
-        print("suit: " .. suit .. ", rank: " .. rank)
       end
     end
 
