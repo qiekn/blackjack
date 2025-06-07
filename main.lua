@@ -148,20 +148,25 @@ function love.draw()
 
       local xMid = 21
       local yTop = 7
+      local yMid = 31
       if card.rank == 1 then
         love.graphics.draw(pipImage, x + xMid, y + 31)
       elseif card.rank == 2 then
         love.graphics.draw(pipImage, x + xMid, y + yTop)
         love.graphics.draw( pipImage, x + xMid + pipWidth, y + cardHeight - yTop, 0, -1)
+      elseif card.rank == 3 then
+        love.graphics.draw(pipImage, x + xMid, y + yTop)
+        love.graphics.draw(pipImage, x + xMid, y + yMid)
+        love.graphics.draw(pipImage, x + xMid + pipWidth, y + cardHeight - yTop, 0, -1)
       end
     end
   end
 
   local testHand = {
-    { suit = "club", rank = 2 },
-    { suit = "diamond", rank = 2 },
-    { suit = "heart", rank = 2 },
-    { suit = "spade", rank = 2 },
+    { suit = "club", rank = 3 },
+    { suit = "diamond", rank = 3 },
+    { suit = "heart", rank = 3 },
+    { suit = "spade", rank = 3 },
   }
 
   for cardIndex, card in ipairs(testHand) do
