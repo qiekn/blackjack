@@ -145,11 +145,14 @@ function love.draw()
     else
       local pipImage = images["pip_" .. card.suit]
       local pipWidth = 11
+
+      local xMid = 21
+      local yTop = 7
       if card.rank == 1 then
-        love.graphics.draw(pipImage, x + 21, y + 31)
+        love.graphics.draw(pipImage, x + xMid, y + 31)
       elseif card.rank == 2 then
-        love.graphics.draw(pipImage, x + 21, y + 7)
-        love.graphics.draw( pipImage, x + 21 + pipWidth, y + cardHeight - 7, 0, -1)
+        love.graphics.draw(pipImage, x + xMid, y + yTop)
+        love.graphics.draw( pipImage, x + xMid + pipWidth, y + cardHeight - yTop, 0, -1)
       end
     end
   end
