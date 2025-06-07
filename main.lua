@@ -25,12 +25,21 @@ end
 function love.draw()
   local function getTotal(hand)
     local total = 0
+    local hasAce = false
     for cardIndex, card in ipairs(hand) do
       if card.rank > 10 then
         total = total + 10
       else
         total = total + card.rank
       end
+
+      if card.rank == 1 then
+        hasAce = true
+      end
+    end
+
+    if hasAce and total <= 11 then
+      total = total + 10
     end
     return total
   end
