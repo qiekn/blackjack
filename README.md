@@ -26,3 +26,11 @@ Face cards (king, queen and jack) have a value of 10, and aces have a value of 1
 After the player has stood or gone bust, the dealer takes cards until the total of their hand is 17 or over.
 
 The round is then over, and the hand with the highest total (if the total is 21 or under) wins the round.
+
+---
+
+## Todo
+
+[x] replace card image with balatro resources
+[ ] state(scene) manager
+[ ] sound effect
