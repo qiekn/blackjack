@@ -112,34 +112,17 @@ function love.draw()
   local function drawCard(card, x, y)
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(images.card, x, y)
+    love.graphics.setColor(0, 0, 0)
 
-    -- Draw card number
     local cardWidth = 53
     local cardHeight = 73
-    local numberOffsetX = 3
-    local numberOffsetY = 4
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.draw(images[card.rank], x + numberOffsetX, y + numberOffsetY)
-    love.graphics.draw(
-      images[card.rank],
-      x + cardWidth - numberOffsetX,
-      y + cardHeight - numberOffsetY,
-      0,
-      -1 -- x scale, -1 means flipped
-    )
-
-    -- Draw suit
-    local suitOffsetX = 3
-    local suitOffsetY = 14
-    local suitImage = images["mini_" .. card.suit]
-    love.graphics.draw(suitImage, x + suitOffsetX, y + suitOffsetY)
-    love.graphics.draw(
-      suitImage,
-      x + cardWidth - suitOffsetX,
-      y + cardHeight - suitOffsetY,
-      0,
-      -1
-    )
+    -- stylua: ignore
+    local function drawCorner(image, offsetX, offsetY)
+      love.graphics.draw(image, x + offsetX, y + offsetY)
+      love.graphics.draw( image, x + cardWidth - offsetX, y + cardHeight - offsetY, 0, -1)
+    end
+    drawCorner(images[card.rank], 3, 4) -- Draw card rank
+    drawCorner(images["mini_" .. card.suit], 3, 14) -- Draw card suit
   end
 
   -- Test start
