@@ -61,6 +61,20 @@ function love.draw()
   end
   table.insert(output, "Total: " .. getTotal(dealerHand))
 
+  -- Draw the winner
+  if roundOver then
+    table.insert(output, "")
+    local a, b = getTotal(playerHand), getTotal(dealerHand)
+    if a <= 21 and (b > 21 or b < a) then
+      table.insert(output, "Player wins")
+    elseif b <= 21 and (a > 21 or b > a) then
+      table.insert(output, "Dealer wins")
+    else
+      table.insert(output, "Draw")
+    end
+  end
+
+  -- Print output
   love.graphics.print(table.concat(output, "\n"), 15, 15)
 end
 
