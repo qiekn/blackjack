@@ -87,9 +87,13 @@ function love.draw()
 end
 
 function love.keypressed(key)
-  if key == "h" and not roundOver then
-    takeCard(playerHand)
-  elseif key == "s" then
-    roundOver = true
+  if not roundOver then
+    if key == "h" then -- Take card
+      takeCard(playerHand)
+    elseif key == "s" then -- Stands
+      roundOver = true
+    end
+  else
+    love.load() -- Play again
   end
 end
