@@ -60,48 +60,6 @@ function love.load()
 end
 
 function love.draw()
-  local output = {}
-
-  table.insert(output, "Player hand:")
-  for cardIndex, card in ipairs(playerHand) do
-    table.insert(output, "suit: " .. card.suit .. ", rank: " .. card.rank)
-  end
-  table.insert(output, "Total: " .. getTotal(playerHand))
-
-  table.insert(output, "")
-
-  table.insert(output, "Dealer hand:")
-  for cardIndex, card in ipairs(dealerHand) do
-    if not roundOver and cardIndex == 1 then
-      -- Until the round is over, the dealer's first card (i.e. the first
-      -- item of the dealer's hand table) is hidden.
-      table.insert(output, "(card hidden)")
-    else
-      table.insert(output, "suit: " .. card.suit .. ", rank: " .. card.rank)
-    end
-  end
-
-  -- Draw the winner
-  if roundOver then
-    table.insert(output, "")
-
-    local function hasHandWon(thisHand, otherHand)
-      return getTotal(thisHand) <= 21
-        and (
-          getTotal(otherHand) > 21
-          or getTotal(thisHand) > getTotal(otherHand)
-        )
-    end
-
-    if hasHandWon(playerHand, dealerHand) then
-      table.insert(output, "Player wins")
-    elseif hasHandWon(dealerHand, playerHand) then
-      table.insert(output, "Dealer wins")
-    else
-      table.insert(output, "Draw")
-    end
-  end
-
   -- Draw cards method
   local function drawCard(card, x, y)
     love.graphics.setColor(1, 1, 1)
@@ -191,6 +149,19 @@ function love.draw()
     end
   end
 
+  -- Draw Hit and Stand Buttons
+  local function drawButton(text, buttonX, buttonWidth, textOffsetX)
+    local buttonY = 230
+    love.graphics.setColor(1, 0.5, 0.2)
+    love.graphics.rectangle("fill", buttonX, buttonY, buttonWidth, 25)
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.print(text, buttonX + textOffsetX, buttonY + 6)
+  end
+
+  drawButton("Hit!", 10, 53, 16)
+  drawButton("Stand", 70, 53, 8)
+  -- drawButton('Play again', 10, 113, 24)
+
   -- Draw Hands
   local cardSpacing = 60
   local marginX = 10
@@ -207,7 +178,7 @@ function love.draw()
     drawCard(card, ((cardIndex - 1) * cardSpacing) + marginX, 140)
   end
 
-  -- Draw Total
+  -- Draw total score and winner
   love.graphics.setColor(0, 0, 0)
   if roundOver then
     love.graphics.print("Total: " .. getTotal(dealerHand), marginX, 10)
