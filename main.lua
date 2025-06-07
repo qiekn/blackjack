@@ -7,15 +7,17 @@ function love.load()
     end
   end
 
-  print("total number of cards in deck: " .. #deck)
+  local function takeCard(hand)
+    table.insert(hand, table.remove(deck, love.math.random(#deck)))
+  end
 
   playerHand = {}
-  table.insert(playerHand, table.remove(deck, love.math.random(#deck)))
-  table.insert(playerHand, table.remove(deck, love.math.random(#deck)))
+  takeCard(playerHand)
+  takeCard(playerHand)
 
   dealerHand = {}
-  table.insert(dealerHand, table.remove(deck, love.math.random(#deck)))
-  table.insert(dealerHand, table.remove(deck, love.math.random(#deck)))
+  takeCard(dealerHand)
+  takeCard(dealerHand)
 
   print("total number of cards in deck: " .. #deck)
 end
