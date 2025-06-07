@@ -57,7 +57,13 @@ function love.draw()
 
   table.insert(output, "Dealer hand:")
   for cardIndex, card in ipairs(dealerHand) do
-    table.insert(output, "suit: " .. card.suit .. ", rank: " .. card.rank)
+    if not roundOver and cardIndex == 1 then
+      -- Until the round is over, the dealer's first card (i.e. the first
+      -- item of the dealer's hand table) is hidden.
+      table.insert(output, "(card hidden)")
+    else
+      table.insert(output, "suit: " .. card.suit .. ", rank: " .. card.rank)
+    end
   end
   table.insert(output, "Total: " .. getTotal(dealerHand))
 
