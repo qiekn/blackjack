@@ -88,6 +88,7 @@ end
 
 function love.keypressed(key)
   if not roundOver then
+    -- Player
     if key == "h" then -- Take card
       takeCard(playerHand)
       -- If the player has gone bust or the value of their hadn is already 21,
@@ -97,6 +98,12 @@ function love.keypressed(key)
       end
     elseif key == "s" then -- Stands
       roundOver = true
+    end
+    -- Dealer
+    if roundOver then
+      while getTotal(dealerHand) < 17 do
+        takeCard(dealerHand)
+      end
     end
   else
     love.load() -- Play again
