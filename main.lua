@@ -197,6 +197,8 @@ function love.draw()
     end
   end
 
+  -- Test case
+  --[[
   local testHand1 = {
     { suit = "club", rank = 1 },
     { suit = "diamond", rank = 2 },
@@ -204,11 +206,9 @@ function love.draw()
     { suit = "spade", rank = 4 },
     { suit = "club", rank = 5 },
   }
-
   for cardIndex, card in ipairs(testHand1) do
     drawCard(card, (cardIndex - 1) * 60, 0)
   end
-
   local testHand2 = {
     { suit = "diamond", rank = 6 },
     { suit = "heart", rank = 7 },
@@ -216,9 +216,18 @@ function love.draw()
     { suit = "club", rank = 9 },
     { suit = "diamond", rank = 10 },
   }
-
   for cardIndex, card in ipairs(testHand2) do
     drawCard(card, (cardIndex - 1) * 60, 80)
+  end
+  ]]
+
+  local cardSpacing = 60
+  local marginX = 10
+  for cardIndex, card in ipairs(dealerHand) do
+    drawCard(card, ((cardIndex - 1) * cardSpacing) + marginX, 30)
+  end
+  for cardIndex, card in ipairs(playerHand) do
+    drawCard(card, ((cardIndex - 1) * cardSpacing) + marginX, 140)
   end
 end
 
