@@ -207,9 +207,12 @@ function love.draw()
     love.graphics.print( button.text, button.x + button.textOffsetX, button.y + button.textOffsetY)
   end
 
-  drawButton(buttonHit)
-  drawButton(buttonStand)
-  -- drawButton('Play again', 10, 113, 24)
+  if not roundOver then
+    drawButton(buttonHit)
+    drawButton(buttonStand)
+  else
+    drawButton(buttonPlayAgain)
+  end
 
   -- Draw Hands
   local cardSpacing = 60
@@ -262,11 +265,23 @@ function love.keypressed(key)
 end
 
 function love.mousereleased()
-  if isMouseInButton(buttonHit) then
-    print("Hit!")
-  elseif isMouseInButton(buttonStand) then
-    print("Stand")
+  if not roundOver then
+    -- Player
+    if isMouseInButton(buttonHit) then
+      takeCard(playerHand)
+      if getTotal(playerHand) >= 21 then
+        roundOver = true
+      end
+    elseif isMouseInButton(buttonStand) then
+      roundOver = true
+    end
+    -- Dealer
+    if roundOver then
+      while getTotal(dealerHand) < 17 do
+        takeCard(dealerHand)
+      end
+    end
   elseif isMouseInButton(buttonPlayAgain) then
-    print("Play again")
+    love.load()
   end
 end
