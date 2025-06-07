@@ -130,6 +130,7 @@ function love.draw()
     drawCorner(images["mini_" .. card.suit], 3, 14) -- Draw card suit
 
     -- Draw face card
+    -- stylua: ignore
     if card.rank > 10 then
       local faceImage
       if card.rank == 11 then
@@ -143,17 +144,21 @@ function love.draw()
       love.graphics.draw(faceImage, x + 12, y + 11)
     else
       local pipImage = images["pip_" .. card.suit]
+      local pipWidth = 11
       if card.rank == 1 then
         love.graphics.draw(pipImage, x + 21, y + 31)
+      elseif card.rank == 2 then
+        love.graphics.draw(pipImage, x + 21, y + 7)
+        love.graphics.draw( pipImage, x + 21 + pipWidth, y + cardHeight - 7, 0, -1)
       end
     end
   end
 
   local testHand = {
-    { suit = "club", rank = 1 },
-    { suit = "diamond", rank = 1 },
-    { suit = "heart", rank = 1 },
-    { suit = "spade", rank = 1 },
+    { suit = "club", rank = 2 },
+    { suit = "diamond", rank = 2 },
+    { suit = "heart", rank = 2 },
+    { suit = "spade", rank = 2 },
   }
 
   for cardIndex, card in ipairs(testHand) do
