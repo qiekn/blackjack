@@ -12,19 +12,7 @@ function love.load()
     table.insert(hand, table.remove(deck, love.math.random(#deck)))
   end
 
-  playerHand = {}
-  takeCard(playerHand)
-  takeCard(playerHand)
-
-  dealerHand = {}
-  takeCard(dealerHand)
-  takeCard(dealerHand)
-
-  print("total number of cards in deck: " .. #deck)
-end
-
-function love.draw()
-  local function getTotal(hand)
+  function getTotal(hand)
     local total = 0
     local hasAce = false
     for cardIndex, card in ipairs(hand) do
@@ -45,6 +33,18 @@ function love.draw()
     return total
   end
 
+  playerHand = {}
+  takeCard(playerHand)
+  takeCard(playerHand)
+
+  dealerHand = {}
+  takeCard(dealerHand)
+  takeCard(dealerHand)
+
+  print("total number of cards in deck: " .. #deck)
+end
+
+function love.draw()
   local output = {}
 
   table.insert(output, "Player hand:")
@@ -90,6 +90,11 @@ function love.keypressed(key)
   if not roundOver then
     if key == "h" then -- Take card
       takeCard(playerHand)
+      -- If the player has gone bust or the value of their hadn is already 21,
+      -- the round is automatically over.
+      if getTotal(playerHand) >= 21 then
+        roundOver = true
+      end
     elseif key == "s" then -- Stands
       roundOver = true
     end
