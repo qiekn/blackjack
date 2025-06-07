@@ -108,7 +108,7 @@ function love.draw()
     end
   end
 
-  -- Draw cards
+  -- Draw cards method
   local function drawCard(card, x, y)
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(images.card, x, y)
@@ -197,34 +197,17 @@ function love.draw()
     end
   end
 
-  -- Test case
-  --[[
-  local testHand1 = {
-    { suit = "club", rank = 1 },
-    { suit = "diamond", rank = 2 },
-    { suit = "heart", rank = 3 },
-    { suit = "spade", rank = 4 },
-    { suit = "club", rank = 5 },
-  }
-  for cardIndex, card in ipairs(testHand1) do
-    drawCard(card, (cardIndex - 1) * 60, 0)
-  end
-  local testHand2 = {
-    { suit = "diamond", rank = 6 },
-    { suit = "heart", rank = 7 },
-    { suit = "spade", rank = 8 },
-    { suit = "club", rank = 9 },
-    { suit = "diamond", rank = 10 },
-  }
-  for cardIndex, card in ipairs(testHand2) do
-    drawCard(card, (cardIndex - 1) * 60, 80)
-  end
-  ]]
-
+  -- Draw Hands
   local cardSpacing = 60
   local marginX = 10
   for cardIndex, card in ipairs(dealerHand) do
-    drawCard(card, ((cardIndex - 1) * cardSpacing) + marginX, 30)
+    local dealerMarginY = 30
+    if not roundOver and cardIndex == 1 then
+      love.graphics.setColor(1, 1, 1)
+      love.graphics.draw(images.card_face_down, marginX, dealerMarginY)
+    else
+      drawCard(card, ((cardIndex - 1) * cardSpacing) + marginX, dealerMarginY)
+    end
   end
   for cardIndex, card in ipairs(playerHand) do
     drawCard(card, ((cardIndex - 1) * cardSpacing) + marginX, 140)
