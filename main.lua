@@ -113,6 +113,7 @@ function love.draw()
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(images.card, x, y)
 
+    -- Draw card number
     local cardWidth = 53
     local cardHeight = 73
     local numberOffsetX = 3
@@ -123,6 +124,19 @@ function love.draw()
       images[card.rank],
       x + cardWidth - numberOffsetX,
       y + cardHeight - numberOffsetY,
+      0,
+      -1 -- x scale, -1 means flipped
+    )
+
+    -- Draw suit
+    local suitOffsetX = 3
+    local suitOffsetY = 14
+    local suitImage = images["mini_" .. card.suit]
+    love.graphics.draw(suitImage, x + suitOffsetX, y + suitOffsetY)
+    love.graphics.draw(
+      suitImage,
+      x + cardWidth - suitOffsetX,
+      y + cardHeight - suitOffsetY,
       0,
       -1
     )
