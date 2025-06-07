@@ -141,9 +141,26 @@ function love.draw()
       end
       love.graphics.setColor(1, 1, 1)
       love.graphics.draw(faceImage, x + 12, y + 11)
+    else
+      local pipImage = images["pip_" .. card.suit]
+      if card.rank == 1 then
+        love.graphics.draw(pipImage, x + 21, y + 31)
+      end
     end
   end
 
+  local testHand = {
+    { suit = "club", rank = 1 },
+    { suit = "diamond", rank = 1 },
+    { suit = "heart", rank = 1 },
+    { suit = "spade", rank = 1 },
+  }
+
+  for cardIndex, card in ipairs(testHand) do
+    drawCard(card, (cardIndex - 1) * 60, 0)
+  end
+
+  --[[
   -- Test start
   local testHand1 = {
     { suit = "club", rank = 1 },
@@ -172,6 +189,7 @@ function love.draw()
     drawCard(card, (cardIndex - 1) * 60, 80)
   end
   -- Test end
+  ]]
 end
 
 function love.keypressed(key)
