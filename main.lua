@@ -113,8 +113,19 @@ function love.draw()
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(images.card, x, y)
 
+    local cardWidth = 53
+    local cardHeight = 73
+    local numberOffsetX = 3
+    local numberOffsetY = 4
     love.graphics.setColor(0, 0, 0)
-    love.graphics.draw(images[card.rank], x + 3, y + 4)
+    love.graphics.draw(images[card.rank], x + numberOffsetX, y + numberOffsetY)
+    love.graphics.draw(
+      images[card.rank],
+      x + cardWidth - numberOffsetX,
+      y + cardHeight - numberOffsetY,
+      0,
+      -1
+    )
   end
 
   -- Test start
