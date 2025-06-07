@@ -143,46 +143,66 @@ function love.draw()
       love.graphics.setColor(1, 1, 1)
       love.graphics.draw(faceImage, x + 12, y + 11)
     else
-      local pipImage = images["pip_" .. card.suit]
-      local pipWidth = 11
+      local function drawPip(offsetX, offsetY, mirrorX, mirrorY)
+        local pipImage = images["pip_" .. card.suit]
+        local pipWidth = 11
+        love.graphics.draw(pipImage, x + offsetX, y + offsetY)
+        if mirrorX then
+          love.graphics.draw(pipImage, x + cardWidth - offsetX - pipWidth, y + offsetY)
+        end
+        if mirrorY then
+          love.graphics.draw(pipImage, x + offsetX + pipWidth, y + cardHeight - offsetY, 0, -1)
+        end
+        if mirrorX and mirrorY then
+          love.graphics.draw(pipImage, x + cardWidth - offsetX , y + cardHeight - offsetY, 0, -1)
+        end
+      end
 
+      local xLeft = 11
       local xMid = 21
       local yTop = 7
+      local yThird = 19
+      local yQtr = 23
       local yMid = 31
       if card.rank == 1 then
-        love.graphics.draw(pipImage, x + xMid, y + 31)
+        drawPip(xMid, yMid)
       elseif card.rank == 2 then
-        love.graphics.draw(pipImage, x + xMid, y + yTop)
-        love.graphics.draw( pipImage, x + xMid + pipWidth, y + cardHeight - yTop, 0, -1)
+        drawPip(xMid, yTop, false, true)
       elseif card.rank == 3 then
-        love.graphics.draw(pipImage, x + xMid, y + yTop)
-        love.graphics.draw(pipImage, x + xMid, y + yMid)
-        love.graphics.draw(pipImage, x + xMid + pipWidth, y + cardHeight - yTop, 0, -1)
+        drawPip(xMid, yTop, false, true)
+        drawPip(xMid, yMid)
+      elseif card.rank == 5 then
+        drawPip(xLeft, yTop, true, true)
+        drawPip(xMid, yMid)
+      elseif card.rank == 6 then
+        drawPip(xLeft, yTop, true, true)
+        drawPip(xLeft, yMid, true)
+      elseif card.rank == 7 then
+        drawPip(xLeft, yTop, true, true)
+        drawPip(xLeft, yMid, true)
+        drawPip(xMid, yThird)
+      elseif card.rank == 8 then
+        drawPip(xLeft, yTop, true, true)
+        drawPip(xLeft, yMid, true)
+        drawPip(xMid, yThird, false, true)
+      elseif card.rank == 9 then
+        drawPip(xLeft, yTop, true, true)
+        drawPip(xLeft, yQtr, true, true)
+        drawPip(xMid, yMid)
+      elseif card.rank == 10 then
+        drawPip(xLeft, yTop, true, true)
+        drawPip(xLeft, yQtr, true, true)
+        drawPip(xMid, 16, false, true)
       end
     end
   end
 
-  local testHand = {
-    { suit = "club", rank = 3 },
-    { suit = "diamond", rank = 3 },
-    { suit = "heart", rank = 3 },
-    { suit = "spade", rank = 3 },
-  }
-
-  for cardIndex, card in ipairs(testHand) do
-    drawCard(card, (cardIndex - 1) * 60, 0)
-  end
-
-  --[[
-  -- Test start
   local testHand1 = {
     { suit = "club", rank = 1 },
     { suit = "diamond", rank = 2 },
     { suit = "heart", rank = 3 },
     { suit = "spade", rank = 4 },
     { suit = "club", rank = 5 },
-    { suit = "diamond", rank = 6 },
-    { suit = "heart", rank = 7 },
   }
 
   for cardIndex, card in ipairs(testHand1) do
@@ -190,19 +210,16 @@ function love.draw()
   end
 
   local testHand2 = {
+    { suit = "diamond", rank = 6 },
+    { suit = "heart", rank = 7 },
     { suit = "spade", rank = 8 },
     { suit = "club", rank = 9 },
     { suit = "diamond", rank = 10 },
-    { suit = "heart", rank = 11 },
-    { suit = "spade", rank = 12 },
-    { suit = "club", rank = 13 },
   }
 
   for cardIndex, card in ipairs(testHand2) do
     drawCard(card, (cardIndex - 1) * 60, 80)
   end
-  -- Test end
-  ]]
 end
 
 function love.keypressed(key)
